@@ -44,9 +44,15 @@ const server = http.createServer((req, res) => {
     getBody(req, (body) => {
       console.log("The body of the post is ", body);
       // here, you can add your own logic
+
+
       if (body["item"]) {
         item = body["item"];
-      } else {
+      }
+      else if (body[hello]){
+        item = "goodbye";
+      } 
+      else {
         item = "Nothing was entered.";
       }
       // Your code changes would end here
