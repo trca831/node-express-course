@@ -30,6 +30,7 @@ const form = () => {
 <head>
 <h1>Hello, change the color of the background 
   using the dropdown menu below! </h1>
+  <h2> Universal Studios is fun </h2>
 </head>
   <body style="background-color:${changeColor}">
 
@@ -70,6 +71,10 @@ const server = http.createServer((req, res) => {
   } else {
     res.end(form());
   }
+});
+
+server.on("request", (req) => {
+  console.log("event received: ", req.method, req.url);
 });
 
 server.listen(3000);
