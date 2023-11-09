@@ -1,40 +1,55 @@
-const { products } = require("./data")
-const express = require("express")
-const app = express()
+const express = require('express');
+const cookieParser = require('cookie-parser');
+const app = express();
 
-app.use(express.static("./public"))
+// Middleware function for logging
+const logger = (req, res, next) => {
+  console.log(`${req.method} ${req.url} - ${new Date()}`);
+  next();
+};
 
-app.get('/api/v1/test', (req, res) => {
-    res.status(200).json({ message: "It worked!" })
-})
+// Middleware for parsing request body
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 
-app.get('/api/v1/products', (req, res) => {
-    res.status(200).json(products)
-})
+// Authentication middleware
+app.use(cookieParser());
+app.use('/api', logger);
+app.use((req, res, next) => {
+  const username = req.cookies.name;
+  if (username) {
+    req.user = username;
+    next();
+  } else {
+    res.status(401).json({ success: false, message: 'Unauthorized' });
+  }
+});
 
-app.get('/api/v1/products/:productID', (req, res) => {
-    const idToFind = parseInt(req.params.productID); 
-    const product = products.find((p) => p.id === idToFind);
-    if(!product) {
-        res.status(404).json({ message: "That product was not found."})
-    }
-    res.status(200).json(product)
-})
+app.get('/test', (req, res) => {
+  res.status(200).json({ success: true, message: `Welcome, ${req.user}` });
+});
 
-app.get('/api/v1/query', (req, res) => {
-    const maxPrice = parseFloat(req.query.maxPrice);
+app.post('/logon', (req, res) => {
+  const name = req.body.name;
+  if (name) {
+    res.cookie('name', name);
+    res.status(201).json({ success: true, message: `Hello, ${name}` });
+  } else {
+    res.status(400).json({ success: false, message: 'Please provide a name' });
+  }
+});
 
-    if (isNaN(maxPrice)) {
-        return res.status(400).json({ error: 'Invalid maxPrice parameter' });
-    }
+app.delete('/logoff', (req, res) => {
+  res.clearCookie('name');
+  res.status(200).json({ success: true, message: 'User logged off' });
+});
 
-    const filteredProducts = products.filter(product => product.price < maxPrice);
+// Include routes
+const peopleRouter = require('./routes/people');
+app.use('/api/v1/people', peopleRouter);
 
-    res.json(filteredProducts);
-  })
-
-app.all('*', (req, res) => {
-    res.status(404).send('<h1>Page not found!</h1>')
-  })
-
-app.listen(3000, () => console.log("Server is running on port 3000....") )
+// Start the server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
