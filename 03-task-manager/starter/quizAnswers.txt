@@ -1,0 +1,7 @@
+#1 To quickly explain how middleware is used in an Express application:
+
+#2 CRUD means Create, Read, Update, Delete
+
+#3a How do you get your app to access the information in the .env file?
+
+#3b How do you protect the contents of the .env file so that it is not stored in your Github repository?
