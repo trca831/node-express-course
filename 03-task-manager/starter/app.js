@@ -5,13 +5,12 @@ const connectDB = require('./db/connect')
 require('dotenv').config()
 //middleware is express json
 //if we dont use this we wont have data in rec.body
+
+//middleware
+app.use(express.static('./public'))
 app.use(express.json())
 
 //routes
-app.get('/hello', (req, res) => {
-    res.send('Task Manager App')
-})
-
 app.use('/api/v1/tasks', tasks)
 
 const port = 3000 
