@@ -13,14 +13,4 @@ const connectDB = (url) => {
  })
 }
 
-// mongoose
-// .connect(connectionString, {
-//     useNewUrlParser: true,
-//     useCreateIndex: true,
-//     useFindAndModify: false,
-//     useUnifiedTopology: true,
-// })
-// .then(()=> console.log('CONNECTED TO THE DB...'))
-// .catch((err)=>console.log(error))
-
 module.exports = connectDB
