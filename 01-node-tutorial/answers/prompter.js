@@ -78,7 +78,7 @@ const form = () => {
     }
   </style>
   <body>
-    <h1>A Calculator</h1>
+    <h1>A Smart Calculator</h1>
     <p>Enter two numbers and select an operation:</p>
     <form method="POST">
       <input name="num1" type="number" value="${num1}" required></input>
@@ -146,6 +146,10 @@ const server = http.createServer((req, res) => {
     res.end(form());
   }
 });
+
+server.on("request", (req) => {  
+  console.log("event received: ", req.method, req.url);  
+});  
 
 server.listen(3000);
 console.log("The server is listening on port 3000.");
