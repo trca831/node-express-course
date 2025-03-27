@@ -20,36 +20,123 @@ const getBody = (req, callback) => {
   });
 };
 
-// here, you could declare one or more variables to store what comes back from the form.
-let item = "Enter something below.";
+// Variables for the calculator
+let num1 = "";
+let num2 = "";
+let operation = "";
+let result = "";
+let feedback = "";
 
-// here, you can change the form below to modify the input fields and what is displayed.
-// This is just ordinary html with string interpolation.
+// The form for the calculator
 const form = () => {
   return `
+  <style>
+    body {
+      background-color: #f0f8ff;
+      color: #333;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+    h1 {
+      color: #4CAF50;
+    }
+    form {
+      margin: 20px 0;
+      padding: 20px;
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      display: inline-block;
+    }
+    input, select, button {
+      padding: 10px;
+      margin: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    p {
+      font-size: 18px;
+    }
+    .result {
+      font-size: 20px;
+      color: #007BFF;
+      font-weight: bold;
+    }
+    .feedback {
+      font-size: 18px;
+      color: #d9534f;
+    }
+  </style>
   <body>
-  <p>${item}</p>
-  <form method="POST">
-  <input name="item"></input>
-  <button type="submit">Submit</button>
-  </form>
+    <h1>A Smart Calculator</h1>
+    <p>Enter two numbers and select an operation:</p>
+    <form method="POST">
+      <input name="num1" type="number" value="${num1}" required></input>
+      <input name="num2" type="number" value="${num2}" required></input>
+      <select name="operation">
+        <option value="add" ${operation === "add" ? "selected" : ""}>Add</option>
+        <option value="subtract" ${operation === "subtract" ? "selected" : ""}>Subtract</option>
+        <option value="multiply" ${operation === "multiply" ? "selected" : ""}>Multiply</option>
+        <option value="divide" ${operation === "divide" ? "selected" : ""}>Divide</option>
+      </select>
+      <button type="submit">Calculate</button>
+    </form>
+    <p class="feedback">${feedback}</p>
+    <p class="result">Result: ${result}</p>
   </body>
   `;
+};
+
+const calculate = (num1, num2, operation) => {
+  let res;
+  num1 = parseFloat(num1);
+  num2 = parseFloat(num2);
+  if (operation === "add") {
+    res = num1 + num2;
+  } else if (operation === "subtract") {
+    res = num1 - num2;
+  } else if (operation === "multiply") {
+    res = num1 * num2;
+  } else if (operation === "divide") {
+    if (num2 === 0) {
+      return "Cannot divide by zero!";
+    }
+    res = num1 / num2;
+  } else {
+    return "Invalid operation.";
+  }
+  return res;
 };
 
 const server = http.createServer((req, res) => {
   console.log("req.method is ", req.method);
   console.log("req.url is ", req.url);
+
   if (req.method === "POST") {
     getBody(req, (body) => {
       console.log("The body of the post is ", body);
-      // here, you can add your own logic
-      if (body["item"]) {
-        item = body["item"];
-      } else {
-        item = "Nothing was entered.";
-      }
-      // Your code changes would end here
+      
+      // Get the values from the form
+      num1 = body["num1"];
+      num2 = body["num2"];
+      operation = body["operation"];
+
+      // Perform the calculation
+      result = calculate(num1, num2, operation);
+      
+      // Provide feedback to the user
+      feedback = `You chose to ${operation} ${num1} and ${num2}.`;
+
       res.writeHead(303, {
         Location: "/",
       });
@@ -59,6 +146,10 @@ const server = http.createServer((req, res) => {
     res.end(form());
   }
 });
+
+server.on("request", (req) => {  
+  console.log("event received: ", req.method, req.url);  
+});  
 
 server.listen(3000);
 console.log("The server is listening on port 3000.");
