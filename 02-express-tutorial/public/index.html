@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Page</title>
+</head>
+<body>
+    <h1>Hello, World!</h1>
+
+    <!-- Button to fetch products -->
+    <button id="fetch-products-button">Fetch Products</button>
+
+    <!-- Div to display fetched products -->
+    <div id="product-list"></div>
+
+    <script>
+        // Event listener for the button
+        document.getElementById('fetch-products-button').addEventListener('click', function() {
+            fetch('/api/v1/products') // Fetch products from API
+                .then(response => response.json()) // Parse JSON response
+                .then(products => {
+                    // Get the product list div and clear it
+                    const productListDiv = document.getElementById('product-list');
+                    productListDiv.innerHTML = ''; // Clear previous products
+
+                    // Add product names to the div
+                    products.forEach(product => {
+                        const productDiv = document.createElement('div');
+                        productDiv.textContent = product.name; // Display product name
+                        productListDiv.appendChild(productDiv); // Append the product div
+                    });
+                });
+        });
+    </script>
+</body>
+</html>
