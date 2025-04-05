@@ -11,6 +11,14 @@ const express = require('express');
 const { products } = require("./data");
 //Creation of the app as returned from calling express()
 const app = express()
+
+const logger = (req, res, next) => {
+    const method = req.method
+    const url = req.url
+    const time = new Date().getFullYear()
+    console.log(method, url, time) 
+}
+
 //app.use statements for the middleware. 
 app.use(express.static('./public'))
 // You’ll eventually use many kinds of middleware, 
@@ -18,7 +26,7 @@ app.use(express.static('./public'))
 //app.get and app.post statements for the routes you will handle. 
 
 
-app.get('./about', (req, res) => {
+app.get('/about', (req, res) => {
     res.status(200).send('About Page')
 })
 app.post('/hello', (req, res) => {
@@ -41,7 +49,7 @@ app.get('/api/v1/products/:productID', (req, res) => {
     if (product) {
         res.json(product);
     } else {
-        res.status(404).json({ error: "That product was not found" });
+        res.status(404).json({ message: "That product was not found" });
     }
 });
 
