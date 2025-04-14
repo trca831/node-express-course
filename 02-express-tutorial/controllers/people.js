@@ -49,7 +49,7 @@ const getPersonById = (req, res) => {
     }
   
     people.splice(personIndex, 1);
-    res.status(204).send(); 
+    res.status(200).json({ success: true, message: 'Person deleted' }); 
   };
 
 module.exports = { getPeople, addPerson, getPersonById, updatePerson, deletePerson };
