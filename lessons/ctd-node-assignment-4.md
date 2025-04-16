@@ -1,18 +1,18 @@
 For this lesson, you continue to work in the `node-express-course/02-express-tutorial` directory. As usual, you should use git to switch to a new branch, the `week4` branch _from_ the `week3` branch, before you start your work. However, there is a potential hitch. Suppose your `week3` branch has not been approved by your reviewer? You are going to continue to work on `app.js`, so your new changes might conflict with any changes that the reviewer requests. There are various ways to solve this problem, having to do with resolution of merge conflicts. One is as follows:
 
-* Add and commit the changes you have made so far to the `week4` branch.
-* Checkout `week3`.
-* Make the changes requested by your reviewer, and add, commit, and push them. This adds them to your PR.
-* Checkout `week4`.
-* Do: `git merge week3 -m "merge of changes to previous week lesson"`. This brings in all the changes from `week3` into your `week4` branch.
+- Add and commit the changes you have made so far to the `week4` branch.
+- Checkout `week3`.
+- Make the changes requested by your reviewer, and add, commit, and push them. This adds them to your PR.
+- Checkout `week4`.
+- Do: `git merge week3 -m "merge of changes to previous week lesson"`. This brings in all the changes from `week3` into your `week4` branch.
 
 At this point, you may get a merge conflict. This happens if there are changes to the same lines in the files in both the `week3` branch that you’re trying to merge in and the `week4` branch that you’re currently in. Git doesn’t know which versions of those lines you want to keep If you know how to resolve merge conflicts, this is the best way to proceed. If you do not know how to resolve merge conflicts, you will need to learn it sooner or later. There is a good tutorial **[here.](https://www.youtube.com/watch?v=lz5OuKzvadQ)** But, here is an alternate procedure:
 
-* Add and commit your changes to the `week4` branch.
-* Checkout `week3`, make the changes required, and add, commit, and push.
-* Checkout `week4`
-* Do: `git checkout week3 -- app.js >apptemp.js`. This takes the version of app.js from the `week3` branch and puts it in a file called `apptemp.js`.
-* Copy the changes you need from `apptemp.js` to `app.js`, and then erase `apptemp.js`
+- Add and commit your changes to the `week4` branch.
+- Checkout `week3`, make the changes required, and add, commit, and push.
+- Checkout `week4`
+- Do: `git checkout week3 -- app.js >apptemp.js`. This takes the version of app.js from the `week3` branch and puts it in a file called `apptemp.js`.
+- Copy the changes you need from `apptemp.js` to `app.js`, and then erase `apptemp.js`
 
 Make the following changes to `app.js` and related files. (Note that examples of code that perform these functions are available in the `final` directory.) First, create a _middleware function_ called `logger` in `app.js`. A middleware function is passed `req` and `res` as its first two parameters, just like an `app.get` call, but it is also passed a third parameter, `next`. The next() function must be called once middleware processing is completed, otherwise no response is sent back for the request. The middleware function you create should log the `method` and `url` properties from the `req` object, as well as the current time, before calling `next()`. Middleware functions are called in two ways. First, you can insert them into your route statements, as follows:
 
@@ -29,7 +29,7 @@ The second way to invoke middleware is via an `app.use()` statement:
 app.use(["/path1", "/path2"], logger);
 ```
 
-In this case, the first argument is a path or an array of paths indicating the urls for which the middleware is called. This argument is optional. If you leave it out, it is called for _**all**_ urls. When using an `app.use()` statement, order is important! For example, if you put `app.use(express.json())` after your `app.post()` statement, the `app.post()` won’t work as expected, because the body will not have been parsed into JSON yet. Call your logger using the first method, in one of your `app.get()` statements, and verify that it works. Then, take the logger call out of your `app.get()` statement, and call it via `app.use()`, for all paths, instead. Verify that it still works.
+In this case, the first argument is a path or an array of paths indicating the urls for which the middleware is called. This argument is optional. If you leave it out, it is called for _**all**_ urls. When using an `app.use()` statement, order is important! For example, if you put `app.use(express.json())` after your `app.post()` statement, the `()` won’t work as expected, because the body will not have been parsed into JSON yet. Call your logger using the first method, in one of your `app.get()` statements, and verify that it works. Then, take the logger call out of your `app.get()` statement, and call it via `app.use()`, for all paths, instead. Verify that it still works.
 
 Next, you need to implement some APIs for people. You have a require statement for `./data.js` that gets the value of products. Get the value for people, also from `./data.js` (add this in the same require statement). Then implement an `app.get` for `/api/v1/people`. Test it with your browser. You are returning JSON, so you call res.json(…) to send the data back. You now need to implement an `app.post` for `/api/v1/people`. This is to add an entry to the people array. Post operations are sent from the browser with a “request body”. You need to add middleware to parse this body into a Javascript object. The following statements do this parsing, returning the result as a hash in `req.body`.
 
