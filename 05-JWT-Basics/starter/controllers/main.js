@@ -18,7 +18,7 @@ const login = async (req, res) => {
     //try to keep payload small, better experience for the user
     const token = jwt.sign({id, username}, process.env.JWT_SECRET,{expiresIn:'30d'})
 
-    res.send(200).json({msg:'user created', token})
+    res.status(200).json({msg:'user created', token})
 }
 
 const dashboard = async (req, res) => {
